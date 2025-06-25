@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Article Detail Card */
+.article-detail {
+    transition: box-shadow 0.3s ease;
+}
+
+.article-detail:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.article-detail img:hover {
+    transform: scale(1.05);
+}
+
+/* Button Styling */
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    border-radius: 25px;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #5a6268;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+}
+
+/* Text Styling */
+.card-text {
+    line-height: 1.6;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 576px) {
+    .card-img-top {
+        height: 200px;
+    }
+    .card-title {
+        font-size: 1.5rem;
+    }
+}
+</style>
+<div class="container mt-4">
+    <div class="card shadow-sm bg-dark border-0 text-white article-detail animate__animated animate__fadeIn">
+        {% if article.image_url %}
+        <img src="{{ article.image_url }}" class="card-img-top" alt="{{ article.title }}" 
+             style="height: 300px; object-fit: cover; transition: transform 0.3s ease;">
+        {% endif %}
+        <div class="card-body">
+            <h1 class="card-title animate__animated animate__fadeInDown">{{ article.title }}</h1>
+            <p class="text-muted animate__animated animate__fadeInUp animate__delay-1s">Published on {{ article.created_at.strftime('%Y-%m-%d') }}</p>
+            <div class="card-text animate__animated animate__fadeInUp animate__delay-2s">
+                {{ article.content | safe }}
+            </div>
+        </div>
+    </div>
+    <div class="mt-3 text-center">
+        <a href="{{ url_for('articles') }}" class="btn btn-secondary btn-lg animate__animated animate__zoomIn animate__delay-3s">← Back to Articles</a>
+    </div>
+</div>
+{% endblock %}

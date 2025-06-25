@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    /* Login Card */
+    .login-card {
+        transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+    
+    .login-card:hover {
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        transform: translateY(-5px);
+    }
+    
+    /* Form Inputs */
+    .form-control-custom {
+        background-color: #2d2d2d;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #e0e0e0;
+        border-radius: 10px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .form-control-custom:focus {
+        background-color: #2d2d2d;
+        border-color: #4dabf7;
+        box-shadow: 0 0 5px rgba(77, 171, 247, 0.5);
+        color: #e0e0e0;
+    }
+    
+    /* Button Styling */
+    .btn-primary {
+        background-color: #4dabf7;
+        border-color: #4dabf7;
+        border-radius: 25px;
+        padding: 10px 20px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+        background-color: #3b8ed5;
+        border-color: #3b8ed5;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(77, 171, 247, 0.4);
+    }
+    
+    /* Link Styling */
+    .text-primary {
+        color: #4dabf7 !important;
+        transition: color 0.3s ease;
+    }
+    
+    .text-primary:hover {
+        color: #3b8ed5 !important;
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 576px) {
+        .login-card {
+            margin: 0 10px;
+        }
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm bg-dark border-0 text-white login-card">
+                <div class="card-header bg-dark border-bottom border-white opacity-25">
+                    <h3 class="text-center mb-0 text-white">Login</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control form-control-custom" id="username" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control form-control-custom" id="password" name="password" required>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Login</button>
+                        </div>
+                    </form>
+                    <p class="text-center mt-3 text-muted">
+                        Don't have an account? <a href="{{ url_for('register') }}" class="text-primary">Register here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

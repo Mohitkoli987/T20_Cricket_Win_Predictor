@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Article Cards */
+.article-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.article-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.article-card img:hover {
+    transform: scale(1.05);
+}
+
+/* Button Styling */
+.btn-primary {
+    background-color: #4dabf7;
+    border-color: #4dabf7;
+    border-radius: 25px;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #3b8ed5;
+    border-color: #3b8ed5;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(77, 171, 247, 0.4);
+}
+</style>
+<div class="container mt-4">
+    <h2 class="mb-4 pb-2 border-bottom border-white opacity-25 text-white animate__animated animate__fadeInLeft">Cricket Articles</h2>
+    <div class="row">
+        {% for article in articles %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm bg-dark border-0 text-white article-card animate__animated animate__fadeInUp" style="animation-delay: {{ loop.index0 * 0.2 }}s;">
+                {% if article.image_url %}
+                <img src="{{ article.image_url }}" class="card-img-top" alt="{{ article.title }}" 
+                     style="height: 200px; object-fit: cover; transition: transform 0.3s ease;">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ article.title }}</h5>
+                    <p class="card-text text-muted">{{ article.content[:200] }}...</p>
+                    <a href="{{ url_for('article', id=article.id) }}" class="btn btn-primary">Read More</a>
+                </div>
+                <div class="card-footer bg-dark border-top-0 text-muted">
+                    {{ article.created_at.strftime('%Y-%m-%d') }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

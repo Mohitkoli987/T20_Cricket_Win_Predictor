@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(135deg, rgba(30, 58, 138, 0.95), rgba(17, 24, 39, 0.95)); /* Deep Blue to Dark Gray gradient only */
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at 80% 20%, rgba(245, 158, 11, 0.2), transparent 70%);
+        z-index: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .hero-section:hover::before {
+        opacity: 0.8;
+    }
+
+    .hero-section:hover {
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .hero-content {
+        z-index: 1;
+    }
+
+    /* Article Cards */
+    .article-card {
+        background: #1F2937; /* Slate Gray */
+        border: 1px solid rgba(243, 244, 246, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .article-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .article-card img {
+        transition: transform 0.3s ease;
+    }
+
+    .article-card img:hover {
+        transform: scale(1.05);
+    }
+
+    /* Button Styling */
+    .btn-primary {
+        background-color: #F59E0B; /* Amber */
+        border-color: #F59E0B;
+        border-radius: 25px;
+        padding: 10px 20px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #FBBF24; /* Golden Amber */
+        border-color: #FBBF24;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(251, 191, 36, 0.4);
+    }
+
+    /* Border and Text */
+    .border-white {
+        border-color: rgba(243, 244, 246, 0.25) !important;
+    }
+
+    .text-white {
+        color: #F3F4F6 !important;
+    }
+
+    .text-muted {
+        color: #D1D5DB !important;
+    }
+
+    /* Subtle Green Accent for Emphasis */
+    .hero-section .btn-outline-light {
+        border-color: #10B981; /* Emerald Green */
+        color: #F3F4F6;
+    }
+
+    .hero-section .btn-outline-light:hover {
+        background-color: #10B981;
+        border-color: #10B981;
+        color: #111827;
+    }
+</style>
+
+<div class="container mt-4">
+    <!-- Hero Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="p-5 rounded-3 position-relative overflow-hidden hero-section" 
+                 style="background-image: url('https://images.app.goo.gl/weWQKQEQbfad66Ye7'); background-size: cover; background-position: center;">
+                <div class="position-relative hero-content">
+                    <h1 class="display-4 fw-bold text-white animate__animated animate__fadeInDown">Welcome to IPL Cricket Hub</h1>
+                    <p class="lead text-white opacity-75 animate__animated animate__fadeInUp animate__delay-1s">Your ultimate destination for IPL match predictions and cricket insights</p>
+                    <hr class="my-4 border-white opacity-25">
+                    <p class="text-white animate__animated animate__fadeInUp animate__delay-2s">Get started with our advanced IPL Win Predictor tool</p>
+                    <a class="btn btn-outline-light btn-lg animate__animated animate__zoomIn animate__delay-3s" href="{{ url_for('predictor') }}" role="button">Try Predictor</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Latest Updates Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-4 pb-2 border-bottom border-white opacity-25 text-white animate__animated animate__fadeInLeft">Latest Cricket Updates</h2>
+        </div>
+    </div>
+
+    <!-- Featured Articles -->
+    <div class="row">
+        {% for article in articles %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm article-card animate__animated animate__fadeInUp" style="animation-delay: {{ loop.index0 * 0.2 }}s;">
+                {% if article.image_url %}
+                <img src="{{ article.image_url }}" class="card-img-top" alt="{{ article.title }}" 
+                     style="height: 200px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title text-white">{{ article.title }}</h5>
+                    <p class="card-text text-muted">{{ article.content[:150] }}...</p>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{{ url_for('article', id=article.id) }}" class="btn btn-primary">Read More</a>
+                        <small class="text-muted">{{ article.created_at.strftime('%Y-%m-%d') }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- View All Articles Button -->
+    <div class="text-center mt-4 mb-5">
+        <a href="{{ url_for('articles') }}" class="btn btn-primary btn-lg animate__animated animate__pulse animate__infinite">View All Articles</a>
+    </div>
+</div>
+{% endblock %}

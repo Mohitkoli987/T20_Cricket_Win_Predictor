@@ -1,0 +1,377 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* General Styles */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    .full-screen {
+      width: 100vw;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Hero section specific styles */
+    .hero-section {
+      background-color: #040A25;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .hero-text {
+      max-width: 80%;
+      margin: 0 auto;
+      animation: fadeIn 1s ease-in-out; /* Fade-in animation for hero text */
+    }
+
+    .hero-image {
+      max-width: 100%;
+      height: auto;
+      margin-top: 20px;
+      border-radius: 8px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      animation: slideUp 1s ease-in-out; /* Slide-up animation for hero image */
+    }
+
+    /* Predictor section styles */
+    .predictor-section {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .predictor-form {
+      max-width: 600px;
+      margin: 0 auto;
+      width: 100%;
+      animation: fadeIn 1s ease-in-out; /* Fade-in for form */
+    }
+
+    /* Button styling */
+    .predict-button {
+      width: 50%;
+      padding: 10px 20px;
+      font-size: 1.2rem;
+      border-radius: 0.5rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .predict-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Ripple effect on button click */
+    .predict-button::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.6s ease, height 0.6s ease;
+    }
+
+    .predict-button:active::after {
+      width: 200px;
+      height: 200px;
+      opacity: 0;
+    }
+
+    /* Form input animation */
+    .form-control, .form-select {
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+      transform: scale(1.02);
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+    }
+
+    /* Card animation for articles */
+    .card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: fadeInUp 1s ease-in-out;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Keyframes for animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* Your existing styles */
+    .bg-gradient {
+      background: linear-gradient(to top right, #f00f31, #f00f31);
+    }
+
+    .clip-path {
+      clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%);
+    }
+
+    .text-white {
+      color: white;
+    }
+
+    .text-blue-300 {
+      color: #93c5fd;
+    }
+
+    .text-blue-100 {
+      color: #bfdbfe;
+    }
+
+    .bg-blue-100 {
+      background-color: #ebf8ff;
+    }
+
+    .rounded-lg {
+      border-radius: 0.5rem;
+    }
+
+    .shadow-2xl {
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+
+    button,
+    input,
+    optgroup,
+    select,
+    textarea {
+      font-family: inherit;
+      font-size: 100%;
+      color: black;
+    }
+  </style>
+  <script>
+    function validateTeams() {
+      var battingTeam = document.getElementById("batting_team").value;
+      var bowlingTeam = document.getElementById("bowling_team").value;
+      var city = document.querySelector('select[name="selected_city"]').value;
+      var target = document.querySelector('input[name="target"]').value;
+      var score = document.querySelector('input[name="score"]').value;
+      var ballsLeft = document.querySelector('input[name="balls_left"]').value;
+      var wickets = document.querySelector('input[name="wickets"]').value;
+
+      // Check if any field is empty
+      if (!battingTeam || !bowlingTeam || !city || !target || !score || !ballsLeft || !wickets) {
+        alert("Please fill in all fields.");
+        return false;
+      }
+
+      // Validate that batting and bowling teams are different
+      if (battingTeam === bowlingTeam) {
+        alert("Batting Team and Bowling Team cannot be the same.");
+        return false;
+      }
+
+      // Additional validation for numeric inputs
+      if (target <= 0 || score < 0 || ballsLeft < 0 || wickets < 0) {
+        alert("Please enter valid values (Target > 0, Score >= 0, Balls Left >= 0, Wickets >= 0).");
+        return false;
+      }
+
+      return true;
+    }
+
+    // Smooth scroll on page load for anchor links
+    document.addEventListener('DOMContentLoaded', function() {
+      const hash = window.location.hash;
+      if (hash === '#predictor-form') {
+        const element = document.getElementById('predictor-form');
+        if (element) element.scrollIntoView({ behavior: 'smooth' });
+      }
+
+      // Add animation class to cards one by one
+      const cards = document.querySelectorAll('.card');
+      cards.forEach((card, index) => {
+        setTimeout(() => {
+          card.style.animationDelay = `${index * 0.2}s`;
+        }, 100);
+      });
+    });
+  </script>
+
+<div class="full-screen bg-blue-900">
+  <header class="absolute inset-x-0 top-0 z-50">
+    <!-- Mobile menu, show/hide based on menu open state. -->
+    <div class="lg:hidden" role="dialog" aria-modal="true"></div>
+  </header>
+
+  <div class="hero-section full-screen">
+    <div class="hero-text">
+      <h1 class="text-4xl font-bold tracking-tight text-white sm:text-6xl">Can't Tell a Yorker from a Googly? We Got Your IPL Predictions Covered 🏏</h1>
+      <p class="mt-6 text-lg leading-8 text-blue-300">Dominate your fantasy league and win big with our winning strategies.</p>
+      <img src="{{ url_for('static', filename='image.png') }}" class="hero-image" alt="IPL Stadium">
+    </div>
+  </div>
+</div>
+
+<div class="full-screen bg-[#040A25] text-white predictor-section">
+  <div class="predictor-form" id="predictor-form">
+    <h1 class="py-4 mt-10 max-w-lg text-3xl font-bold tracking-tight text-blue-100 sm:text-5xl text-center">IPL Victory Predictor</h1>
+
+    <form action="/predict" method="post" onsubmit="return validateTeams();" class="row g-3">
+      <div class="col-md-6">
+        <select name="batting_team" id="batting_team" class="form-select bg-blue-100 text-black w-full" required>
+          <option value="" disabled selected>Select Batting Team</option>
+          <option value="Mumbai Indians">Mumbai Indians</option>
+          <option value="Gujarat Titans">Gujarat Titans</option>
+          <option value="Kolkata Knight Riders">Kolkata Knight Riders</option>
+          <option value="Delhi Capitals">Delhi Capitals</option>
+          <option value="Sunrisers Hyderabad">Sunrisers Hyderabad</option>
+          <option value="Royal Challengers Bangalore">Royal Challengers Bangalore</option>
+          <option value="Lucknow Super Giants">Lucknow Super Giants</option>
+          <option value="Rajasthan Royals">Rajasthan Royals</option>
+          <option value="Chennai Super Kings">Chennai Super Kings</option>
+          <option value="Punjab Kings">Punjab Kings</option>
+        </select>
+      </div>
+
+      <div class="col-md-6">
+        <select name="bowling_team" id="bowling_team" class="form-select bg-blue-100 text-black w-full" required>
+          <option value="" disabled selected>Select Bowling Team</option>
+          <option value="Mumbai Indians">Mumbai Indians</option>
+          <option value="Gujarat Titans">Gujarat Titans</option>
+          <option value="Kolkata Knight Riders">Kolkata Knight Riders</option>
+          <option value="Delhi Capitals">Delhi Capitals</option>
+          <option value="Sunrisers Hyderabad">Sunrisers Hyderabad</option>
+          <option value="Royal Challengers Bangalore">Royal Challengers Bangalore</option>
+          <option value="Lucknow Super Giants">Lucknow Super Giants</option>
+          <option value="Rajasthan Royals">Rajasthan Royals</option>
+          <option value="Chennai Super Kings">Chennai Super Kings</option>
+          <option value="Punjab Kings">Punjab Kings</option>
+        </select>
+      </div>
+
+      <div class="col-md-6">
+        <select name="selected_city" class="form-select bg-blue-100 text-black w-full" required>
+          <option value="" disabled selected>Select Venue</option>
+          <option value="Mumbai">Mumbai</option>
+          <option value="Chennai">Chennai</option>
+          <option value="Bangalore">Bangalore</option>
+          <option value="Ahmedabad">Ahmedabad</option>
+          <option value="Hyderabad">Hyderabad</option>
+          <option value="Kolkata">Kolkata</option>
+          <option value="Visakhapatnam">Visakhapatnam</option>
+          <option value="Indore">Indore</option>
+          <option value="Durban">Durban</option>
+          <option value="Chandigarh">Chandigarh</option>
+          <option value="Delhi">Delhi</option>
+          <option value="Dharamsala">Dharamsala</option>
+          <option value="Ranchi">Ranchi</option>
+          <option value="Nagpur">Nagpur</option>
+          <option value="Mohali">Mohali</option>
+          <option value="Pune">Pune</option>
+          <option value="Bengaluru">Bengaluru</option>
+          <option value="Jaipur">Jaipur</option>
+          <option value="Port Elizabeth">Port Elizabeth</option>
+          <option value="Centurion">Centurion</option>
+          <option value="Raipur">Raipur</option>
+          <option value="Sharjah">Sharjah</option>
+          <option value="Cuttack">Cuttack</option>
+          <option value="Johannesburg">Johannesburg</option>
+          <option value="Cape Town">Cape Town</option>
+          <option value="East London">East London</option>
+          <option value="Abu Dhabi">Abu Dhabi</option>
+          <option value="Kimberley">Kimberley</option>
+          <option value="Bloemfontein">Bloemfontein</option>
+        </select>
+      </div>
+
+      <div class="col-md-6">
+        <input type="number" name="target" class="form-control bg-blue-100 text-black w-full" placeholder="Target" required>
+      </div>
+
+      <div class="col-md-6">
+        <input type="number" name="score" class="form-control bg-blue-100 text-black w-full" placeholder="Score" required>
+      </div>
+
+      <div class="col-md-6">
+        <input type="number" name="balls_left" class="form-control bg-blue-100 text-black w-full" placeholder="Balls Left" required>
+      </div>
+
+      <div class="col-md-6">
+        <input type="number" name="wickets" class="form-control bg-blue-100 text-black w-full" placeholder="Wickets Down" required>
+      </div>
+
+      <div class="col-12 text-center mt-6">
+        <button type="submit" class="predict-button bg-gradient-to-tl from-pink-500 via-red-500 to-yellow-500 text-white">Predict</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Latest Cricket Articles -->
+<div class="full-screen bg-[#040A25] text-white">
+  <div class="flex-grow">
+    <h2 class="text-center text-white pt-8">Latest Cricket Articles</h2>
+    <div class="row mx-auto max-w-7xl px-6">
+      {% for article in articles %}
+      <div class="col-md-4 mb-4">
+        <div class="card h-100">
+          {% if article.image_url %}
+          <img src="{{ article.image_url }}" class="card-img-top" alt="{{ article.title }}">
+          {% endif %}
+          <div class="card-body">
+            <h5 class="card-title">{{ article.title }}</h5>
+            <p class="card-text">{{ article.content[:150] }}...</p>
+            <a href="{{ url_for('article', id=article.id) }}" class="btn btn-primary">Read More</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-3 pb-8">
+      <a href="{{ url_for('articles') }}" class="btn btn-primary">View All Articles</a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
